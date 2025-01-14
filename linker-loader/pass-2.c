@@ -234,7 +234,6 @@ void modify_memory(int location, int half_bytes, char operator_symbol, unsigned 
         break;
     }
 
-    printf(" ");
     for (i = (half_bytes + 1) / 2 - 1; i >= 0; i--)
     {
         memory_array[location + i] = modified_value & 0x000000FF;
