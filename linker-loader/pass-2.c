@@ -6,8 +6,8 @@
 #define MEMORY_SIZE 65536
 #define ERROR_VALUE -1
 
-int memory_array[MEMORY_SIZE];
-int memory_array_wom[MEMORY_SIZE];
+unsigned int memory_array[MEMORY_SIZE];
+unsigned int memory_array_wom[MEMORY_SIZE];
 
 typedef struct
 {
@@ -22,7 +22,7 @@ void show_estab();
 void init_estab();
 int ll_pass_two(FILE *object_programs, int PROGADDR);
 void save_to_mem_array(FILE *object_programs, int start_address, int tr_length);
-void modify_memory(int location, int half_bytes, char operator_symbol, int symbol_value);
+void modify_memory(int location, int half_bytes, char operator_symbol, unsigned int symbol_value);
 
 void print_without_modifications(int PROGADDR, int total_length);
 void print_with_modifications(int PROGADDR, int total_length);
@@ -93,7 +93,6 @@ int ll_pass_two(FILE *object_programs, int PROGADDR)
         CSLTH = hr.length;
         if (current_record_type == '.')
             continue;
-        printf("%s", hr.name);
 
         while (current_record_type != 'E')
         {
@@ -140,7 +139,7 @@ int ll_pass_two(FILE *object_programs, int PROGADDR)
 
 void save_to_mem_array(FILE *object_programs, int start_address, int tr_length)
 {
-    int obj_instruction;
+    unsigned int obj_instruction;
     int i;
 
     for (i = 0; i < tr_length; i++)
@@ -187,6 +186,18 @@ void init_estab()
         }
     }
 
+    fclose(estab_file);
+    estab_file = fopen("ESTAB.txt", "r");
+    while (fscanf(estab_file, "%s\t%s\t%x\t%s", symbol, dummy, &address, &length) > 0)
+    {
+        if (strcmp(symbol, "****") != 0)
+        {
+            strcpy(estab[i].symbol, symbol);
+            estab[i].address = address;
+            i++;
+        }
+    }
+    fclose(estab_file);
     estab_length = i;
 }
 
@@ -199,17 +210,19 @@ void show_estab()
     return;
 }
 
-void modify_memory(int location, int half_bytes, char operator_symbol, int symbol_value)
+void modify_memory(int location, int half_bytes, char operator_symbol, unsigned int symbol_value)
 {
     int i;
-    int modified_value = 0x00000000;
+    unsigned int modified_value = 0x00000000;
+    printf("\n%x ", location);
 
     for (i = 0; i < half_bytes / 2 + half_bytes % 2; i++)
     {
         modified_value <<= 8;
         modified_value += memory_array[location + i];
+        printf("%02x", memory_array[location + i]);
     }
-
+    // printf("Not yet modified: %x", modified_value);
     switch (operator_symbol)
     {
     case '+':
@@ -220,9 +233,12 @@ void modify_memory(int location, int half_bytes, char operator_symbol, int symbo
         break;
     }
 
+    // printf("\tModified: %x\n", modified_value);
+    printf(" ");
     for (; i >= 0; i--)
     {
         memory_array[location + i] = modified_value & 0x000000FF;
+        printf("%02x", memory_array[location + i]);
         modified_value >>= 8;
     }
 }

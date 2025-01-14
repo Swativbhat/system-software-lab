@@ -120,7 +120,7 @@ int search_csect_name(char *csect_name)
 void csect_name_insert(char *csect_name, int CSADDR, int CSLTH)
 {
     FILE *ESTAB = fopen("ESTAB.txt", "a");
-    fprintf(ESTAB, "%-10s%-10s%-10x%-10x\n", csect_name, " ", CSADDR, CSLTH);
+    fprintf(ESTAB, "%-10s%-10s%-10x%-10x\n", csect_name, "****", CSADDR, CSLTH);
     fclose(ESTAB);
 
     return;
@@ -162,7 +162,7 @@ void symbol_insert(char *symbol_name, int target_address)
 {
     FILE *ESTAB = fopen("ESTAB.txt", "a");
 
-    fprintf(ESTAB, "%-10s%-10s%-10x%-10s\n", " ", symbol_name, target_address, " ");
+    fprintf(ESTAB, "%-10s%-10s%-10x%-10s\n", "****", symbol_name, target_address, "****");
     fclose(ESTAB);
 
     return;
