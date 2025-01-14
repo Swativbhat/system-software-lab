@@ -214,15 +214,17 @@ void modify_memory(int location, int half_bytes, char operator_symbol, unsigned 
 {
     int i;
     unsigned int modified_value = 0x00000000;
-    printf("\n%x ", location);
 
-    for (i = 0; i < half_bytes / 2 + half_bytes % 2; i++)
+    // Extract the value from memory_array for modification
+    for (i = 0; i < (half_bytes + 1) / 2; i++)
     {
         modified_value <<= 8;
         modified_value += memory_array[location + i];
-        printf("%02x", memory_array[location + i]);
     }
-    // printf("Not yet modified: %x", modified_value);
+
+    printf("Original Value at %06x: %x\n", location, modified_value);
+
+    // Apply modification
     switch (operator_symbol)
     {
     case '+':
@@ -231,15 +233,24 @@ void modify_memory(int location, int half_bytes, char operator_symbol, unsigned 
     case '-':
         modified_value -= symbol_value;
         break;
+    default:
+        printf("ERROR: Unsupported operator '%c'\n", operator_symbol);
+        return;
     }
 
-    // printf("\tModified: %x\n", modified_value);
-    printf(" ");
-    for (; i >= 0; i--)
+    printf("Modified Value: %x\n", modified_value);
+
+    // Write back the modified value into memory_array
+    for (i = (half_bytes + 1) / 2 - 1; i >= 0; i--)
     {
-        memory_array[location + i] = modified_value & 0x000000FF;
-        printf("%02x", memory_array[location + i]);
+        memory_array[location + i] = modified_value & 0xFF;
         modified_value >>= 8;
+    }
+
+    // Validate if modified_value fully written (should be zero here)
+    if (modified_value != 0)
+    {
+        printf("WARNING: Overflow occurred while writing modified value to memory.\n");
     }
 }
 
