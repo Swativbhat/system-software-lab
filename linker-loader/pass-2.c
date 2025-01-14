@@ -222,7 +222,7 @@ void modify_memory(int location, int half_bytes, char operator_symbol, unsigned 
         modified_value += memory_array[location + i];
     }
 
-    printf("Original Value at %06x: %x\n", location, modified_value);
+    //printf("Original Value at %06x: %x\n", location, modified_value);
 
     // Apply modification
     switch (operator_symbol)
@@ -238,7 +238,7 @@ void modify_memory(int location, int half_bytes, char operator_symbol, unsigned 
         return;
     }
 
-    printf("Modified Value: %x\n", modified_value);
+    //printf("Modified Value: %x\n", modified_value);
 
     // Write back the modified value into memory_array
     for (i = (half_bytes + 1) / 2 - 1; i >= 0; i--)
@@ -250,7 +250,7 @@ void modify_memory(int location, int half_bytes, char operator_symbol, unsigned 
     // Validate if modified_value fully written (should be zero here)
     if (modified_value != 0)
     {
-        printf("WARNING: Overflow occurred while writing modified value to memory.\n");
+        //printf("WARNING: Overflow occurred while writing modified value to memory.\n");
     }
 }
 
